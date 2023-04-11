@@ -1,0 +1,34 @@
+import { createSlice } from '@reduxjs/toolkit';
+import { ObjectId } from 'mongoose';
+
+export interface ICodeBlock {
+	title: string;
+	code: string;
+}
+const data = async () => {
+	try {
+		const response = await fetch('http://localhost:3000/codeBlock', {
+			method: 'GET',
+		});
+		const data = await response.json();
+		return data;
+	} catch (err) {}
+};
+const codeData: ICodeBlock[] = await data();
+console.log(codeData);
+export const CodeBlockSlice = createSlice({
+	name: 'CodeData',
+	initialState: {
+		value: codeData,
+		filteredValue: {},
+	},
+	reducers: {
+		setAllData: (state) => {
+			state.filteredValue = state.value;
+		},
+	},
+});
+
+export const { setAllData } = CodeBlockSlice.actions;
+
+export default CodeBlockSlice.reducer;
