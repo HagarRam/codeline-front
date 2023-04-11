@@ -1,12 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { ICodeBlock } from './slices/CodeBlockSlice';
-import CodeBlockReducer from './slices/CodeBlockSlice';
+import codesReducer, { ICodeBlock } from './slices/codeDatasSlice';
 export interface RootState {
-	codeBlock: ICodeBlockState;
+	codes: ICodeDataState;
 }
-export interface ICodeBlockState {
+export interface ICodeDataState {
 	value: ICodeBlock[];
 }
 export default configureStore({
-	reducer: { CodeBlock: CodeBlockReducer },
+	reducer: { codes: codesReducer },
 });

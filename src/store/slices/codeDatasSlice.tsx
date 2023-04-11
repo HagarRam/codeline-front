@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { ObjectId } from 'mongoose';
-
 export interface ICodeBlock {
 	_id: ObjectId;
 	title: string;
 	code: string;
 }
+
 const data = async () => {
 	try {
 		const response = await fetch('http://localhost:7000/codeBlock', {
@@ -15,12 +15,13 @@ const data = async () => {
 		return data;
 	} catch (err) {}
 };
-const codeDatas: ICodeBlock[] = await data();
-console.log(codeDatas);
-export const CodeBlockSlice = createSlice({
-	name: 'CodeData',
+const codeData: ICodeBlock[] = await data();
+console.log(codeData);
+
+export const codeSlice = createSlice({
+	name: 'codeData',
 	initialState: {
-		value: codeDatas,
+		value: codeData,
 		filteredValue: {},
 	},
 	reducers: {
@@ -30,6 +31,6 @@ export const CodeBlockSlice = createSlice({
 	},
 });
 
-export const { setAllData } = CodeBlockSlice.actions;
+export const { setAllData } = codeSlice.actions;
 
-export default CodeBlockSlice.reducer;
+export default codeSlice.reducer;
