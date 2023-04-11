@@ -8,7 +8,7 @@ export interface ICodeBlock {
 }
 const data = async () => {
 	try {
-		const response = await fetch('http://localhost:3000/codeBlock', {
+		const response = await fetch('http://localhost:7000/codeBlock', {
 			method: 'GET',
 		});
 		const data = await response.json();
