@@ -24,11 +24,15 @@
 #submit-button {
 	text-align: center;
 	background-color: lavender;
-	margin: 0 45%;
+	margin: 0 46%;
+	padding: 15px;
+	border-radius: 16px;
 }
 #submit-button:hover {
-	background-color: rgb(160, 215, 160);
-	color: rgb(136, 117, 117);
+	background-color: rgb(186, 255, 154);
+	box-shadow: 0px 15px 20px rgba(98, 121, 112, 0.4);
+	color: rgb(22, 33, 33);
+	transform: translateY(-7px);
 }
 .confirm-delete-modal {
 	display: block;
