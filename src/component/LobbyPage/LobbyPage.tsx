@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { ICodeBlock } from '../../store/slices/codeDatasSlice';
 import { RootState } from '../../store/store';
-import CodeBlock from '../CodeBlock/CodeBlock';
+import CodeBlockCard from '../CodeBlockCard/CodeBlockCard';
 import Footer from '../Footer/Footer';
 import NavBar from '../NavBar/NavBar';
 import './LobbyPage.css';
@@ -17,7 +17,7 @@ const LobbyPage: React.FC = () => {
 				<div id="all-the-blocks">
 					{codeBlockData?.map((subject: ICodeBlock) => {
 						return (
-							<CodeBlock
+							<CodeBlockCard
 								_id={subject._id}
 								title={subject.title}
 								code={subject.code}

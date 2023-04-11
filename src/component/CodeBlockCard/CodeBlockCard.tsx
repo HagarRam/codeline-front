@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ICodeBlock } from '../../store/slices/codeDatasSlice';
-import './CodeBlock.css';
-const CodeBlock: React.FC<ICodeBlock> = (props: ICodeBlock) => {
+import './CodeBlockCard.css';
+const CodeBlockCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const { title, _id } = props;
 	const navigate = useNavigate();
 	return (
@@ -16,4 +16,4 @@ const CodeBlock: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	);
 };
 
-export default CodeBlock;
+export default CodeBlockCard;
