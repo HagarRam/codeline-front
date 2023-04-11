@@ -10,7 +10,7 @@ const CodeBlockCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 			className="block"
 			onClick={() => navigate(`/${_id}`)}>
 			<div id="card-information">
-				<div className="block-subject">{title}</div>
+				<div className="subject-block">{title}</div>
 			</div>
 		</div>
 	);
