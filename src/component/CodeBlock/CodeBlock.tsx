@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ICodeBlock } from '../../store/slices/codeDatasSlice';
+import './CodeBlock.css';
 const CodeBlock: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const { title, _id } = props;
 	const navigate = useNavigate();

@@ -5,24 +5,26 @@ import { RootState } from '../../store/store';
 import CodeBlock from '../CodeBlock/CodeBlock';
 import Footer from '../Footer/Footer';
 import NavBar from '../NavBar/NavBar';
-
+import './LobbyPage.css';
 const LobbyPage: React.FC = () => {
 	const codeBlockData = useSelector((state: RootState) => state.codes?.value);
 	console.log(codeBlockData);
 	return (
-		<div>
+		<div id="body">
 			<NavBar />
-			<h1>Choose Code Block</h1>
-			<div>
-				{codeBlockData?.map((subject: ICodeBlock) => {
-					return (
-						<CodeBlock
-							_id={subject._id}
-							title={subject.title}
-							code={subject.code}
-						/>
-					);
-				})}
+			<div id="lobby-page-container">
+				<h1>Choose Code Block</h1>
+				<div id="all-the-blocks">
+					{codeBlockData?.map((subject: ICodeBlock) => {
+						return (
+							<CodeBlock
+								_id={subject._id}
+								title={subject.title}
+								code={subject.code}
+							/>
+						);
+					})}
+				</div>
 			</div>
 			<Footer />
 		</div>

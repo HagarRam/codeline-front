@@ -1,0 +1,40 @@
+#all-the-blocks {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	margin: 0% 23%;
+	gap: 20px;
+}
+#body {
+	height: 100vh;
+	width: 100vw;
+	background-color: #d3d3c9;
+}
+h1 {
+	text-align: center;
+	font-family: 'Helvetica Neue Light';
+}
+#lobby-page-container {
+	height: 65%;
+}
+.block {
+	width: 100%;
+	text-align: center;
+	height: 100px;
+	background-color: #e6e6ff;
+	border-radius: 15px;
+	font-size: 22px;
+	padding-top: 70px;
+}
+.block:hover {
+	background-color: #6d6b64;
+	color: white;
+}
+
+@media only screen and (max-width: 690px) {
+	#all-the-blocks {
+		grid-template-columns: repeat(1, 1fr);
+	}
+	.block {
+		font-size: 20px;
+	}
+}
