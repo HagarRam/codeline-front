@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { ObjectId } from 'mongoose';
 
 export interface ICodeBlock {
+	_id: ObjectId;
 	title: string;
 	code: string;
 }
@@ -14,12 +15,12 @@ const data = async () => {
 		return data;
 	} catch (err) {}
 };
-const codeData: ICodeBlock[] = await data();
-console.log(codeData);
+const codeDatas: ICodeBlock[] = await data();
+console.log(codeDatas);
 export const CodeBlockSlice = createSlice({
 	name: 'CodeData',
 	initialState: {
-		value: codeData,
+		value: codeDatas,
 		filteredValue: {},
 	},
 	reducers: {
