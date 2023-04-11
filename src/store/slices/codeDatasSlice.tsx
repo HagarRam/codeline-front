@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { ObjectId } from 'mongoose';
 export interface ICodeBlock {
-	_id: ObjectId;
-	title: string;
-	code: string;
+	_id?: ObjectId;
+	title?: string;
+	code?: string;
 }
 
 const data = async () => {

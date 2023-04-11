@@ -5,6 +5,7 @@ import { ICodeBlock } from '../../store/slices/codeDatasSlice';
 import { RootState } from '../../store/store';
 import Footer from '../Footer/Footer';
 import NavBar from '../NavBar/NavBar';
+import SingleCodeCard from '../SingleCodeCard/SingleCodeCard';
 
 const CodeBlockPage: React.FC = () => {
 	const data = useSelector((state: RootState) => state.codes.value);
@@ -18,9 +19,14 @@ const CodeBlockPage: React.FC = () => {
 	}
 
 	return (
-		<div>
+		<div id="body">
 			<NavBar />
-			<div>singlepage</div>
+			<div>
+				<SingleCodeCard
+					title={codeData?.title ?? ''}
+					code={codeData?.code ?? ''}
+				/>
+			</div>
 			<Footer />
 		</div>
 	);

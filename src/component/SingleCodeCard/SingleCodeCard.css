@@ -1,0 +1,32 @@
+.block-subject {
+	font-size: 28px;
+	text-align: center;
+	color: w;
+	color: rgb(67, 67, 109);
+	font-family: 'Helvetica Neue Medium';
+	height: 100px;
+}
+.subject-information {
+	height: 65vh;
+}
+#text-area {
+	background-color: black;
+	color: floralwhite;
+	width: 40%;
+	height: 200px;
+	font-size: 16px;
+	font-family: 'Helvetica Neue Medium';
+}
+#text-area-container {
+	text-align: center;
+	height: 40%;
+}
+#submit-button {
+	text-align: center;
+	background-color: lavender;
+	margin: 0 45%;
+}
+#submit-button:hover {
+	background-color: rgb(160, 215, 160);
+	color: rgb(136, 117, 117);
+}
