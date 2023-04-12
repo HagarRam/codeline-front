@@ -25,6 +25,7 @@ const CodeBlockPage: React.FC = () => {
 				<SingleCodeCard
 					title={codeData?.title ?? ''}
 					code={codeData?.code ?? ''}
+					_id={codeData?._id}
 				/>
 			</div>
 			<Footer />

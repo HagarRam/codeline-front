@@ -2,40 +2,70 @@ import React, { useEffect, useState } from 'react';
 import { ICodeBlock } from '../../store/slices/codeDatasSlice';
 import './SingleCodeCard.css';
 import io from 'socket.io-client';
-
+import { ObjectId } from 'mongoose';
+import { RootState } from '../../store/store';
+import { useSelector } from 'react-redux';
 const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
-	const { title, code } = props;
+	const data = useSelector((state: RootState) => state.codes.value);
+	const { title, code, _id } = props;
 	const [SubmitModal, setSubmitModal] = useState(false);
 	const [socket, setSocket] = useState<any>(null);
+	const [newCodeBlock, setNewCodeBlock] = useState('');
 	const [codeBlock, setCodeBlock] = useState('');
+	const codeData: ICodeBlock | undefined = data?.find((subject: ICodeBlock) => {
+		return subject._id?.toString() === _id;
+	});
 
-	useEffect(() => {
-		// Connect to Socket.IO server
-		const socket = io('http://localhost:7000');
+	// useEffect(() => {
+	// 	const socket = io('http://localhost:7000');
 
-		socket.on('connect', () => {
-			// Join the "code room" and emit the client's identifier
-			socket.emit('join', 'code room');
-			setSocket(socket);
-		});
+	// 	socket.on('connect', () => {
+	// 		socket.emit('join', 'code room');
+	// 		setSocket(socket);
+	// 	});
 
-		socket.on('code block', (data: any) => {
-			// Receive code block from server and update state
-			setCodeBlock(data.code);
-		});
+	// 	socket.on('code block', (data: any) => {
+	// 		setCodeBlock(data.code);
+	// 	});
 
-		return () => {
-			// Disconnect from Socket.IO server on component unmount
-			socket.disconnect();
-		};
-	}, []);
+	// 	return () => {
+	// 		socket.disconnect();
+	// 	};
+	// }, []);
 
-	const handelSubmit = () => {
-		// Emit code block to server
-		socket.emit('code block', { code: codeBlock });
-		setSubmitModal(true);
+	const updateCodeData = async (_id: ObjectId, newData: ICodeBlock) => {
+		try {
+			const response = await fetch(`http://localhost:7000/codeBlock`, {
+				method: 'PUT',
+				body: JSON.stringify({
+					_id: _id,
+					data: newData,
+				}),
+				headers: {
+					'Content-type': 'application/json; charset=UTF-8',
+				},
+			});
+			const data = await response.json();
+			window.location.reload();
+			if (!response.ok) {
+				throw new Error(data.message);
+			}
+		} catch (err) {
+			console.error(err);
+			throw err;
+		}
 	};
 
+	const handelSubmit = async () => {
+		// socket.emit('code block', { code: newCodeBlock });
+		const updateCode = {
+			...codeData,
+			code: newCodeBlock,
+		};
+		if (updateCode._id) {
+			await updateCodeData(updateCode._id, updateCode);
+		}
+	};
 	const handelCancel = () => {
 		setSubmitModal(false);
 	};
@@ -43,8 +73,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const handelCodeBlockChange = (
 		event: React.ChangeEvent<HTMLTextAreaElement>
 	) => {
-		// Update local state with code block
-		setCodeBlock(event.target.value);
+		setNewCodeBlock(event.target.value);
 	};
 
 	return (
@@ -56,7 +85,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 				<textarea
 					id="text-area"
 					placeholder="enter your code...."
-					value={codeBlock}
+					value={newCodeBlock}
 					onChange={handelCodeBlockChange}
 				/>
 				<div id="code-container">{code}</div>
@@ -64,7 +93,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 
 			<div
 				id="submit-button"
-				onClick={handelSubmit}>
+				onClick={() => setSubmitModal(true)}>
 				SUBMIT
 			</div>
 			{SubmitModal && (
@@ -73,12 +102,12 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 						<div className="delete-modal-header">Are you sure?</div>
 						<div className="confirm-buttons">
 							<button
-								// onClick={() => handelDeleteSubject(subject._id)}
+								onClick={handelSubmit}
 								className="confirm-submit">
 								Confirm
 							</button>
 							<button
-								onClick={() => handelCancel()}
+								onClick={handelCancel}
 								className="cancel">
 								Cancel
 							</button>
