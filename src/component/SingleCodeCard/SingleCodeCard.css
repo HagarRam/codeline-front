@@ -10,22 +10,27 @@
 	height: 65vh;
 }
 #text-area {
-	background-color: black;
+	background-color: #1a2c52;
 	color: floralwhite;
-	width: 40%;
-	height: 200px;
+	width: 28%;
+	height: 250px;
 	font-size: 16px;
+	padding: 20px 20px 0;
 	font-family: 'Helvetica Neue Medium';
 }
 #text-area-container {
 	text-align: center;
-	height: 40%;
+	height: 40vh;
+	display: flex;
+	gap: 20px;
+	justify-content: space-evenly;
 }
 #submit-button {
+	width: 75px;
 	text-align: center;
 	background-color: lavender;
 	margin: 0 46%;
-	padding: 15px;
+	padding: 10px 9px;
 	border-radius: 16px;
 }
 #submit-button:hover {
@@ -104,4 +109,12 @@
 .cancel:hover {
 	background-color: rgb(106, 154, 162);
 	color: white;
+}
+#code-container {
+	width: 28%;
+	height: 250px;
+	background-color: lavender;
+	font-size: 16px;
+	padding: 20px 20px 0;
+	font-family: 'Helvetica Neue Light';
 }

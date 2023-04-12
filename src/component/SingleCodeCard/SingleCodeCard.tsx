@@ -6,7 +6,10 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const handelSubmit = () => {
 		setSubmitModal(true);
 	};
-	const { title } = props;
+	const handelCancel = () => {
+		setSubmitModal(false);
+	};
+	const { title, code } = props;
 	return (
 		<div className="subject-information">
 			<div id="card-information">
@@ -17,7 +20,9 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 					id="text-area"
 					placeholder="enter your code...."
 				/>
+				<div id="code-container">{code}</div>
 			</div>
+
 			<div
 				id="submit-button"
 				onClick={() => handelSubmit()}>
@@ -34,7 +39,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 								Confirm
 							</button>
 							<button
-								// onClick={() => handelCancel()}
+								onClick={() => handelCancel()}
 								className="cancel">
 								Cancel
 							</button>
