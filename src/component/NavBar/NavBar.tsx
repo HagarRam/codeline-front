@@ -6,12 +6,12 @@ const NavBar: React.FC = () => {
 	const navigate = useNavigate();
 	return (
 		<div id="NavBar">
-			<img
+			{/* <img
 				src={logo}
 				alt="logo"
 				id="logo"
 				onClick={() => navigate(`/`)}
-			/>
+			/> */}
 		</div>
 	);
 };

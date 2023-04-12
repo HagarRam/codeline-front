@@ -7,7 +7,9 @@ import Footer from '../Footer/Footer';
 import NavBar from '../NavBar/NavBar';
 import './LobbyPage.css';
 const LobbyPage: React.FC = () => {
-	const codeBlockData = useSelector((state: RootState) => state.codes?.value);
+	const codeBlockData = useSelector(
+		(state: RootState) => state.codeBlocks?.value
+	);
 	console.log(codeBlockData);
 	return (
 		<div id="body">
@@ -15,12 +17,13 @@ const LobbyPage: React.FC = () => {
 			<div id="lobby-page-container">
 				<h1>Choose Code Block</h1>
 				<div id="all-the-blocks">
-					{codeBlockData?.map((subject: ICodeBlock) => {
+					{codeBlockData?.map((subject: ICodeBlock, index: number) => {
 						return (
 							<CodeBlockCard
 								_id={subject._id}
 								title={subject.title}
 								code={subject.code}
+								key={index}
 							/>
 						);
 					})}

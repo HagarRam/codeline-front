@@ -2,36 +2,37 @@ import React, { useEffect, useState } from 'react';
 import { ICodeBlock } from '../../store/slices/codeDatasSlice';
 import './SingleCodeCard.css';
 import io from 'socket.io-client';
-import { ObjectId } from 'mongoose';
 import { RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
+import { ObjectId } from 'mongoose';
 const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
-	const data = useSelector((state: RootState) => state.codes.value);
+	const data = useSelector((state: RootState) => state.codeBlocks.value);
 	const { title, code, _id } = props;
 	const [SubmitModal, setSubmitModal] = useState(false);
 	const [socket, setSocket] = useState<any>(null);
 	const [newCodeBlock, setNewCodeBlock] = useState('');
-	const [codeBlock, setCodeBlock] = useState('');
+	const [socketConnected, setSocketConnected] = useState(false);
 	const codeData: ICodeBlock | undefined = data?.find((subject: ICodeBlock) => {
 		return subject._id?.toString() === _id;
 	});
 
-	// useEffect(() => {
-	// 	const socket = io('http://localhost:7000');
+	useEffect(() => {
+		const socket = io('http://localhost:3000');
+		socket.connected = true;
+		setSocket(socket);
+		console.log(socket);
+		socket.on('connection', () => {
+			setSocketConnected(true);
+			console.log('Socket connection:', socket);
+		});
 
-	// 	socket.on('connect', () => {
-	// 		socket.emit('join', 'code room');
-	// 		setSocket(socket);
-	// 	});
-
-	// 	socket.on('code block', (data: any) => {
-	// 		setCodeBlock(data.code);
-	// 	});
-
-	// 	return () => {
-	// 		socket.disconnect();
-	// 	};
-	// }, []);
+		// socket.on('disconnect', () => {
+		// 	setSocketConnected(false);
+		// });
+		// return () => {
+		// 	socket.disconnect();
+		// };
+	}, []);
 
 	const updateCodeData = async (_id: ObjectId, newData: ICodeBlock) => {
 		try {
@@ -46,7 +47,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 				},
 			});
 			const data = await response.json();
-			window.location.reload();
+			// window.location.reload();
 			if (!response.ok) {
 				throw new Error(data.message);
 			}
@@ -56,15 +57,29 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 		}
 	};
 
+	// socket.emit('chat-message', { code: newCodeBlock });
+	// const updateCode = {
+	// 	...codeData,
+	// 	code: newCodeBlock,
+	// };
+	// if (updateCode._id) {
+	// 	await updateCodeData(updateCode._id, updateCode);
+	// }
+
 	const handelSubmit = async () => {
-		// socket.emit('code block', { code: newCodeBlock });
 		const updateCode = {
 			...codeData,
 			code: newCodeBlock,
 		};
 		if (updateCode._id) {
-			await updateCodeData(updateCode._id, updateCode);
+			console.log(updateCode);
+			// await updateCodeData(updateCode._id, updateCode);
+			// const down = true;
+			// socket.emit('code_block', { updateCode, down });
 		}
+		console.log('pass');
+		setNewCodeBlock('');
+		setSubmitModal(false);
 	};
 	const handelCancel = () => {
 		setSubmitModal(false);
@@ -73,6 +88,8 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const handelCodeBlockChange = (
 		event: React.ChangeEvent<HTMLTextAreaElement>
 	) => {
+		console.log(event.target.value);
+		socket.emit('code_block', event.target.value);
 		setNewCodeBlock(event.target.value);
 	};
 

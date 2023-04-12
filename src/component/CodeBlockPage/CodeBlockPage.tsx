@@ -8,7 +8,7 @@ import NavBar from '../NavBar/NavBar';
 import SingleCodeCard from '../SingleCodeCard/SingleCodeCard';
 
 const CodeBlockPage: React.FC = () => {
-	const data = useSelector((state: RootState) => state.codes.value);
+	const data = useSelector((state: RootState) => state.codeBlocks.value);
 	let codeID = useParams<string>();
 	const codeData: ICodeBlock | undefined = data?.find((subject: ICodeBlock) => {
 		return subject._id?.toString() === codeID.id;
