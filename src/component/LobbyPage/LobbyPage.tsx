@@ -11,6 +11,7 @@ const LobbyPage: React.FC = () => {
 	const codeBlockData = useSelector(
 		(state: RootState) => state.codeBlocks?.value
 	);
+	sessionStorage.setItem('Data', JSON.stringify(codeBlockData));
 	console.log(codeBlockData);
 	return (
 		<div id="body">

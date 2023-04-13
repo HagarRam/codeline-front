@@ -15,6 +15,8 @@
 	width: 28%;
 	height: 250px;
 	font-size: 16px;
+	overflow: scroll;
+	border-radius: 45px;
 	padding: 20px 20px 0;
 	font-family: 'Helvetica Neue Medium';
 }
@@ -115,6 +117,30 @@
 	height: 250px;
 	background-color: lavender;
 	font-size: 16px;
+	border-radius: 45px;
 	padding: 20px 20px 0;
+	overflow: scroll;
 	font-family: 'Helvetica Neue Light';
+}
+/* width */
+::-webkit-scrollbar {
+	width: 100%;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: transparent;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: transparent;
+}
+.block {
+	font-size: 20px;
 }

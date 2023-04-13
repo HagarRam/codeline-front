@@ -18,33 +18,59 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const { title, code, _id } = props;
 	const [SubmitModal, setSubmitModal] = useState(false);
 	const [codes, setCode] = useState('');
-	// const [socket, setSocket] = useState<any>(null);
-	// const [socketConnected, setSocketConnected] = useState(false);
-	const [newCodeBlock, setNewCodeBlock] = useState(props.code);
+	const [messageList, setMessageList] = useState<string[]>([`${code}`]);
+	const [newCodeBlock, setNewCodeBlock] = useState<any>(messageList);
 	const [loggedIn, setLoggedIn] = useState(false);
 	const codeData: ICodeBlock | undefined = data?.find((subject: ICodeBlock) => {
 		return subject._id?.toString() === _id;
 	});
-	console.log(codeData);
+	const codeDataStorageString: string | null = sessionStorage.getItem('Data');
+	const codeDataStorage: ICodeBlock[] = codeDataStorageString
+		? JSON.parse(codeDataStorageString)
+		: [];
+	const thisSubjectData: ICodeBlock | undefined = codeDataStorage.find(
+		(subject: ICodeBlock) => {
+			return subject._id?.toString() === _id;
+		}
+	);
+	console.log(thisSubjectData, 'subje');
+
+	const newSocket = io(CONNECTION_PORT);
 	useEffect(() => {
-		const newSocket = io(CONNECTION_PORT);
+		newSocket.emit('join_Subject', codeData);
+		newSocket.on('receive_message', function (data) {
+			setNewCodeBlock(data);
+		});
+
+		return () => {
+			newSocket.off('receive_message');
+		};
+	}, []);
+	// useEffect(() => {
+	// 	newSocket.on('receive_message', (data) => {
+	// 		setMessageList([data]);
+	// 		console.log(messageList);
+	// 	});
+	// }, []);
+
+	useEffect(() => {
 		setSocket(newSocket);
 		newSocket.on('receive_message', (data) => {
-			setCode(data);
+			console.log('data', data);
+			setNewCodeBlock(data);
 		});
 		return () => {
 			newSocket.disconnect();
 		};
 	}, [CONNECTION_PORT]);
-
+	console.log(newCodeBlock);
 	useEffect(() => {
-		const newSocket = io(CONNECTION_PORT);
 		newSocket.emit('join_Subject', codeData);
 	}, [codeData]);
+
 	const handelCodeBlockChange = (
 		event: React.ChangeEvent<HTMLTextAreaElement>
 	) => {
-		const newSocket = io(CONNECTION_PORT);
 		setNewCodeBlock(event.target.value);
 		const updateCode = {
 			...codeData,
@@ -52,72 +78,27 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 		};
 
 		newSocket.emit('new_code', updateCode);
+		// newSocket.on('receive_message', function (data) {
+		// 	setNewCodeBlock(data);
+		// 	console.log(newCodeBlock, 'k');
+		// });
 	};
-	const newSocket = io(CONNECTION_PORT);
-	newSocket.on('receive_message', function (data) {
-		setNewCodeBlock(data.code);
-	});
 
-	// const sendMessage = () => {
-	//     setLoggedIn(true);
-	//     const updateCode = {
-	//         ...codeData,
-	//         code: newCodeBlock,
-	//     };
-	//     socket.emit('newCode', updateCode);
-	// };
-	// const handelCodeBlockChange = (
-	// 	event: React.ChangeEvent<HTMLTextAreaElement>
-	// ) => {
-	// 	const data = { ...codeData, code: event.target.value };
-	// 	socket.emit('code_block', data);
-	// 	setNewCodeBlock(event.target.value);
-	// };
-
-	// const handelSubmit = async () => {
-	// 	const updateCode = {
-	// 		...codeData,
-	// 		code: newCodeBlock,
-	// 	};
-	// 	if (updateCode._id) {
-	// 		console.log(updateCode);
-	// 		// await updateCodeData(updateCode._id, updateCode);
-	// 		// const down = true;
-	// 		// socket.emit('code_block', { updateCode, down });
-	// 	}
-	// 	console.log('pass');
-	// 	setNewCodeBlock('');
-	// 	setSubmitModal(false);
-	// };
-
-	// const handelCancel = () => {
-	// 	setSubmitModal(false);
-	// };
-	// useEffect(() => {
-	// 	const socket = io('http://localhost:7000');
-	// 	setSocket(socket);
-	// 	socket.on('connection', () => {
-	// 		setSocketConnected(true);
-	// 		console.log('Socket connection:', socket);
-	// 	});
-
-	// socket.on('disconnect', () => {
-	// 	setSocketConnected(false);
-	// });
-	// return () => {
-	// 	socket.disconnect();
-	// };
-	// }, []);
-
-	// socket.emit('chat-message', { code: newCodeBlock });
-	// const updateCode = {
-	// 	...codeData,
-	// 	code: newCodeBlock,
-	// };
-	// if (updateCode._id) {
-	// 	await updateCodeData(updateCode._id, updateCode);
-	// }
-
+	const handelSubmit = async () => {
+		const updateCode = {
+			...codeData,
+			code: newCodeBlock,
+		};
+		if (updateCode._id) {
+			console.log(updateCode);
+			// await updateCodeData(updateCode._id, updateCode);
+		}
+		setNewCodeBlock('');
+		setSubmitModal(false);
+	};
+	const handelCancel = () => {
+		setSubmitModal(false);
+	};
 	// const updateCodeData = async (_id: ObjectId, newData: ICodeBlock) => {
 	//     try {
 	//         const response = await fetch(`http://localhost:7000/codeBlock`, {
@@ -154,7 +135,11 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 						handelCodeBlockChange(e);
 					}}
 				/>
-				<div id="code-container">{code}</div>
+				<div id="code-container">
+					{messageList.map((message, index) => (
+						<div key={index}>{message}</div>
+					))}
+				</div>
 			</div>
 
 			<div
@@ -168,13 +153,12 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 						<div className="delete-modal-header">Are you sure?</div>
 						<div className="confirm-buttons">
 							<button
-								// onClick={sendMessage}
-								// onClick={handelSubmit}
+								onClick={handelSubmit}
 								className="confirm-submit">
 								Confirm
 							</button>
 							<button
-								// onClick={handelCancel}
+								onClick={handelCancel}
 								className="cancel">
 								Cancel
 							</button>
