@@ -31,12 +31,16 @@
 	justify-content: space-evenly;
 }
 #submit-button {
-	width: 75px;
+	width: 130px;
 	text-align: center;
 	background-color: lavender;
 	margin: 0 46%;
-	padding: 10px 9px;
+	padding: 16px 10px;
+	font-weight: 600;
+	letter-spacing: 0.8px;
+	border: 0;
 	border-radius: 16px;
+	font-family: 'Helvetica Neue Thin';
 }
 #submit-button:hover {
 	background-color: rgb(186, 255, 154);
@@ -44,7 +48,7 @@
 	color: rgb(22, 33, 33);
 	transform: translateY(-7px);
 }
-.confirm-delete-modal {
+.confirm-modal {
 	display: block;
 	position: fixed;
 	top: 0;
@@ -55,7 +59,7 @@
 	z-index: 2;
 }
 
-.delete-modal-content {
+.modal-content {
 	position: absolute;
 	top: 30%;
 	left: 50%;
@@ -71,16 +75,16 @@
 	border-radius: 5px;
 }
 
-.confirm-buttons {
+.modal-confirm-buttons {
 	display: flex;
 	flex-direction: row;
 	gap: 30px;
 	text-align: center;
 }
-.delete-modal-header {
+.modal-header {
 	font-size: 20px;
 }
-.confirm-submit {
+.confirm-button {
 	font-size: 16px;
 	line-height: 20px;
 	letter-spacing: 2.67px;
@@ -93,12 +97,12 @@
 	border-radius: 5px;
 	color: white;
 }
-.confirm-submit:hover {
+.confirm-button:hover {
 	background-color: lavender;
 	color: black;
 }
 
-.cancel {
+.cancel-button {
 	font-size: 16px;
 	line-height: 20px;
 	letter-spacing: 2.67px;
@@ -110,9 +114,10 @@
 	padding: 5px;
 	border-radius: 5px;
 	color: black;
+	background-color: #c9c9ff;
 }
-.cancel:hover {
-	background-color: rgb(106, 154, 162);
+.cancel-button:hover {
+	background-color: rgb(102, 102, 155);
 	color: white;
 }
 #code-container {
@@ -150,10 +155,43 @@
 
 #only-read-title {
 	text-align: center;
-	margin-bottom: 100px;
+	margin-bottom: 40px;
 	color: rgb(151 75 153);
 	font-weight: 400;
 }
 #only-read-title:hover {
-	color: rgb(163, 53, 105);
+	color: rgb(67, 67, 109);
+}
+button {
+	cursor: pointer;
+}
+@media only screen and (max-width: 690px) {
+	#text-area-container {
+		padding-left: 20%;
+		flex-direction: column;
+	}
+	#text-area {
+		width: 70%;
+	}
+	#code-container {
+		width: 70%;
+	}
+	#submit-button {
+		font-size: 12px;
+		margin-top: 50px;
+		margin-left: 40%;
+		width: 80px;
+		padding: 10px 0px;
+	}
+	.subject-title {
+		font-size: 20px;
+		height: 30px;
+	}
+	#only-read-title {
+		font-size: 16px;
+	}
+	#logo {
+		width: 170px;
+		height: 80%;
+	}
 }

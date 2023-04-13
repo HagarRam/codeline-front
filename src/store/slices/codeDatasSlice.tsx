@@ -5,7 +5,7 @@ export interface ICodeBlock {
 	title?: string;
 	code?: string;
 	correctCode?: string;
-	connected?: number;
+	connect?: number;
 	firstClient?: string | null;
 	readOnly?: boolean;
 }

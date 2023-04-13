@@ -12,6 +12,7 @@
 h1 {
 	text-align: center;
 	font-family: 'Helvetica Neue Light';
+	font-weight: 400;
 }
 #lobby-page-container {
 	height: 65%;
