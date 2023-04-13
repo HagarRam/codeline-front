@@ -14,10 +14,14 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const [messageList, setMessageList] = useState<string[]>([`${code}`]);
 	const [newCodeBlock, setNewCodeBlock] = useState<any>(messageList);
 	const [readOnly, setReadOnly] = useState<boolean>(true);
+	const [youRight, setYouRight] = useState<boolean>(false);
 	const codeData: ICodeBlock | undefined = data?.find((subject: ICodeBlock) => {
 		return subject._id?.toString() === _id;
 	});
-
+	const [correctCodes, setCorrectCode] = useState<string>(
+		`${codeData?.correctCode}`
+	);
+	console.log(correctCodes);
 	const newSocket = io(CONNECTION_PORT);
 	useEffect(() => {
 		newSocket.emit('join_Subject', codeData);
@@ -38,6 +42,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 			setNewCodeBlock(data);
 		});
 		return () => {
+			setReadOnly(true);
 			const updateCode = {
 				...codeData,
 				code: newCodeBlock,
@@ -56,6 +61,12 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 			readOnly: readOnly,
 			code: event.target.value,
 		};
+		if (correctCodes === event.target.value) {
+			console.log('Correct');
+			setYouRight(true);
+		} else {
+			setYouRight(false);
+		}
 		newSocket.emit('new_code', updateCode);
 	};
 
@@ -75,6 +86,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const handelCancel = () => {
 		setSubmitModal(false);
 	};
+
 	// const updateCodeData = async (_id: ObjectId, newData: ICodeBlock) => {
 	// 	try {
 	// 		const response = await fetch(`http://localhost:7000/codeBlock`, {
@@ -132,7 +144,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 					))}
 				</div>
 			</div>
-
+			{youRight && <div id="correct-code"> CORRECT CODE!!!</div>}
 			<button
 				id="submit-button"
 				onClick={() => setSubmitModal(true)}>
