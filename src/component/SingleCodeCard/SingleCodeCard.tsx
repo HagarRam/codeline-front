@@ -6,7 +6,7 @@ import { RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
 import { ObjectId } from 'mongoose';
 import { DefaultEventsMap } from '@socket.io/component-emitter';
-const CONNECTION_PORT = 'https://localhost:7000';
+const CONNECTION_PORT = 'http://localhost:7000';
 
 const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const [socket, setSocket] = useState<Socket<
@@ -17,34 +17,46 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const data = useSelector((state: RootState) => state.codeBlocks.value);
 	const { title, code, _id } = props;
 	const [SubmitModal, setSubmitModal] = useState(false);
+	const [codes, setCode] = useState('');
 	// const [socket, setSocket] = useState<any>(null);
 	// const [socketConnected, setSocketConnected] = useState(false);
-	const [newCodeBlock, setNewCodeBlock] = useState('');
+	const [newCodeBlock, setNewCodeBlock] = useState(props.code);
 	const [loggedIn, setLoggedIn] = useState(false);
 	const codeData: ICodeBlock | undefined = data?.find((subject: ICodeBlock) => {
 		return subject._id?.toString() === _id;
 	});
+	console.log(codeData);
 	useEffect(() => {
 		const newSocket = io(CONNECTION_PORT);
 		setSocket(newSocket);
-
-		return () => newSocket.disconnect();
+		newSocket.on('receive_message', (data) => {
+			setCode(data);
+		});
+		return () => {
+			newSocket.disconnect();
+		};
 	}, [CONNECTION_PORT]);
 
-	console.log(socket);
 	useEffect(() => {
-		socket?.emit('join_Subject', codeData);
+		const newSocket = io(CONNECTION_PORT);
+		newSocket.emit('join_Subject', codeData);
 	}, [codeData]);
 	const handelCodeBlockChange = (
 		event: React.ChangeEvent<HTMLTextAreaElement>
 	) => {
+		const newSocket = io(CONNECTION_PORT);
 		setNewCodeBlock(event.target.value);
 		const updateCode = {
 			...codeData,
 			code: event.target.value,
 		};
-		socket?.emit('newCode', updateCode);
+
+		newSocket.emit('new_code', updateCode);
 	};
+	const newSocket = io(CONNECTION_PORT);
+	newSocket.on('receive_message', function (data) {
+		setNewCodeBlock(data.code);
+	});
 
 	// const sendMessage = () => {
 	//     setLoggedIn(true);
