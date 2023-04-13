@@ -1,9 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { ObjectId } from 'mongoose';
 export interface ICodeBlock {
-	_id?: string;
+	_id?: ObjectId;
 	title?: string;
 	code?: string;
+	correctCode?: string;
+	connected?: number;
+	firstClient?: string | null;
+	readOnly?: boolean;
 }
 
 const data = async () => {

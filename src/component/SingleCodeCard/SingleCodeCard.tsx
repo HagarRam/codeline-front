@@ -20,7 +20,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const [codes, setCode] = useState('');
 	const [messageList, setMessageList] = useState<string[]>([`${code}`]);
 	const [newCodeBlock, setNewCodeBlock] = useState<any>(messageList);
-	const [loggedIn, setLoggedIn] = useState(false);
+	const [readOnly, setReadOnly] = useState(true);
 	const codeData: ICodeBlock | undefined = data?.find((subject: ICodeBlock) => {
 		return subject._id?.toString() === _id;
 	});
@@ -33,7 +33,6 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 			return subject._id?.toString() === _id;
 		}
 	);
-	console.log(thisSubjectData, 'subje');
 
 	const newSocket = io(CONNECTION_PORT);
 	useEffect(() => {
@@ -41,17 +40,14 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 		newSocket.on('receive_message', function (data) {
 			setNewCodeBlock(data);
 		});
+		newSocket.on('readOnly', (socketReadOnly) => {
+			setReadOnly(socketReadOnly);
+		});
 
 		return () => {
 			newSocket.off('receive_message');
 		};
 	}, []);
-	// useEffect(() => {
-	// 	newSocket.on('receive_message', (data) => {
-	// 		setMessageList([data]);
-	// 		console.log(messageList);
-	// 	});
-	// }, []);
 
 	useEffect(() => {
 		setSocket(newSocket);
@@ -60,11 +56,13 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 			setNewCodeBlock(data);
 		});
 		return () => {
+			newSocket.emit('user_disconnect', codeData);
 			newSocket.disconnect();
 		};
 	}, [CONNECTION_PORT]);
 	console.log(newCodeBlock);
 	useEffect(() => {
+		setReadOnly(false);
 		newSocket.emit('join_Subject', codeData);
 	}, [codeData]);
 
@@ -99,42 +97,57 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const handelCancel = () => {
 		setSubmitModal(false);
 	};
-	// const updateCodeData = async (_id: ObjectId, newData: ICodeBlock) => {
-	//     try {
-	//         const response = await fetch(`http://localhost:7000/codeBlock`, {
-	//             method: 'PUT',
-	//             body: JSON.stringify({
-	//                 _id: _id,
-	//                 data: newData,
-	//             }),
-	//             headers: {
-	//                 'Content-type': 'application/json; charset=UTF-8',
-	//             },
-	//         });
-	//         const data = await response.json();
-	//         // window.location.reload();
-	//         if (!response.ok) {
-	//             throw new Error(data.message);
-	//         }
-	//     } catch (err) {
-	//         console.error(err);
-	//         throw err;
-	//     }
-	// };
+	const updateCodeData = async (_id: ObjectId, newData: ICodeBlock) => {
+		try {
+			const response = await fetch(`http://localhost:7000/codeBlock`, {
+				method: 'PUT',
+				body: JSON.stringify({
+					_id: _id,
+					data: newData,
+				}),
+				headers: {
+					'Content-type': 'application/json; charset=UTF-8',
+				},
+			});
+			const data = await response.json();
+			// window.location.reload();
+			if (!response.ok) {
+				throw new Error(data.message);
+			}
+		} catch (err) {
+			console.error(err);
+			throw err;
+		}
+	};
 	return (
 		<div className="subject-information">
 			<div id="card-information">
 				<div className="subject-title">{title}</div>
 			</div>
+			<div id="only-read-title">
+				{readOnly ? 'Only Read' : '	Edit Your Code'}
+			</div>
 			<div id="text-area-container">
-				<textarea
-					id="text-area"
-					placeholder="enter your code...."
-					value={newCodeBlock}
-					onChange={(e) => {
-						handelCodeBlockChange(e);
-					}}
-				/>
+				{!readOnly ? (
+					<textarea
+						id="text-area"
+						placeholder="enter your code...."
+						value={newCodeBlock}
+						onChange={(e) => {
+							handelCodeBlockChange(e);
+						}}
+					/>
+				) : (
+					<textarea
+						readOnly
+						id="text-area"
+						placeholder="enter your code...."
+						value={newCodeBlock}
+						onChange={(e) => {
+							handelCodeBlockChange(e);
+						}}
+					/>
+				)}
 				<div id="code-container">
 					{messageList.map((message, index) => (
 						<div key={index}>{message}</div>

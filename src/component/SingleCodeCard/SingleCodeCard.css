@@ -4,7 +4,10 @@
 	color: w;
 	color: rgb(67, 67, 109);
 	font-family: 'Helvetica Neue Medium';
-	height: 100px;
+	height: 50px;
+}
+.subject-title:hover {
+	color: rgb(151 75 153);
 }
 .subject-information {
 	height: 65vh;
@@ -143,4 +146,14 @@
 }
 .block {
 	font-size: 20px;
+}
+
+#only-read-title {
+	text-align: center;
+	margin-bottom: 100px;
+	color: rgb(151 75 153);
+	font-weight: 400;
+}
+#only-read-title:hover {
+	color: rgb(163, 53, 105);
 }
