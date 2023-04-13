@@ -5,7 +5,6 @@ import { RootState } from '../../store/store';
 import CodeBlockCard from '../CodeBlockCard/CodeBlockCard';
 import Footer from '../Footer/Footer';
 import NavBar from '../NavBar/NavBar';
-import SingleCode from '../SingleCodeCard/SingleCode';
 import './LobbyPage.css';
 const LobbyPage: React.FC = () => {
 	const codeBlockData = useSelector(
