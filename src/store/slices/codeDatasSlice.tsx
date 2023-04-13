@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { ObjectId } from 'mongoose';
 export interface ICodeBlock {
-	_id?: ObjectId;
+	_id?: string;
 	title?: string;
 	code?: string;
 }
