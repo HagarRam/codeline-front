@@ -4,7 +4,6 @@ import './SingleCodeCard.css';
 import io from 'socket.io-client';
 import { RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
-import { DefaultEventsMap } from '@socket.io/component-emitter';
 import { ObjectId } from 'mongoose';
 const CONNECTION_PORT = 'http://localhost:7000';
 
@@ -29,13 +28,29 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const [correctCodes, setCorrectCode] = useState<string>(
 		`${codeData?.correctCode}`
 	);
-
 	useEffect(() => {
 		const socket = io(CONNECTION_PORT);
 		setNewSocket(socket);
 
 		socket.on('isMentor', (socketReadOnly: any) => {
-			setReadOnly(socketReadOnly);
+			if (socketReadOnly) {
+				sessionStorage.setItem('isMentor', 'true');
+				setReadOnly(socketReadOnly);
+			} else {
+				const isMentor = sessionStorage.getItem('isMentor') === 'true';
+				setReadOnly(isMentor);
+				if (!isMentor) {
+					sessionStorage.removeItem('isMentor');
+				}
+			}
+
+			// console.log(socketReadOnly);
+			// if (socketReadOnly) {
+			// 	sessionStorage.setItem('isMentor', 'true');
+			// 	setReadOnly(socketReadOnly);
+			// } else {
+			// 	setReadOnly(socketReadOnly);
+			// }
 		});
 
 		socket.on('code_update', (data: string) => {
@@ -46,6 +61,53 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 			document.getElementById('text-area')?.setAttribute('readonly', 'true');
 		});
 	}, []);
+
+	// if (sessionStorage.getItem('isMentor') === 'true') {
+	// 	setReadOnly(true);
+	// }
+
+	// const isMentor = () => {
+	// 	if (!readOnly) {
+	// 		sessionStorage.setItem('isMentor', 'true');
+	// 	} else {
+	// 		sessionStorage.removeItem('isMentor');
+	// 	}
+
+	// 	// call the setReadOnly function based on the current state of the "isMentor" key in the session storage object
+	// 	if (sessionStorage.getItem('isMentor') === 'true') {
+	// 		setReadOnly(false);
+	// 	} else {
+	// 		setReadOnly(true);
+	// 	}
+	// };
+	// isMentor();
+
+	// const isMentor = async () => {
+	// 	if (readOnly) {
+	// 		sessionStorage.setItem('isMentor', 'true');
+	// 	} else {
+	// 		sessionStorage.removeItem('isMentor');
+	// 	}
+
+	// 	// call the setReadOnly function based on the current state of the "isMentor" key in the session storage object
+	// 	if (sessionStorage.getItem('isMentor') === 'true') {
+	// 		setReadOnly(true);
+	// 	} else {
+	// 		setReadOnly(false);
+	// 	}
+	// };
+	// isMentor();
+	// if (readOnly) {
+	// 	sessionStorage.setItem('isMentor', 'true');
+	// } else {
+	// 	sessionStorage.removeItem('isMentor');
+	// }
+
+	// if (sessionStorage.getItem('isMentor') == 'true') {
+	// 	setReadOnly(true);
+	// } else {
+	// 	setReadOnly(false);
+	// }
 
 	const handelCodeBlockChange = (
 		event: React.ChangeEvent<HTMLTextAreaElement>
