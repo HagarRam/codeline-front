@@ -15,8 +15,8 @@
 #text-area {
 	background-color: #1a2c52;
 	color: floralwhite;
-	width: 28%;
-	height: 250px;
+	width: 70%;
+	height: 320px;
 	font-size: 16px;
 	overflow: scroll;
 	border-radius: 45px;
@@ -28,7 +28,7 @@
 	height: 40vh;
 	display: flex;
 	gap: 20px;
-	justify-content: space-evenly;
+	margin-left: 22%;
 }
 #submit-button {
 	width: 130px;
@@ -71,8 +71,8 @@
 	justify-content: flex-start;
 	flex-direction: column;
 	gap: 15px;
-	padding: 10px;
-	border-radius: 5px;
+	padding: 22px;
+	border-radius: 36px;
 }
 
 .modal-confirm-buttons {
@@ -177,10 +177,6 @@ button {
 	margin-bottom: 40px;
 }
 @media only screen and (max-width: 690px) {
-	#text-area-container {
-		padding-left: 20%;
-		flex-direction: column;
-	}
 	#text-area {
 		width: 70%;
 	}

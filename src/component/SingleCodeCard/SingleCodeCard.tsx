@@ -14,7 +14,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const { title, code, _id } = props;
 	const [SubmitModal, setSubmitModal] = useState(false);
 	const [newSocket, setNewSocket] = useState<any>('0');
-	const [num, setMum] = useState<any>('0');
+	const [information, setInformation] = useState<any>('');
 	const [messageList, setMessageList] = useState<string[]>([`${code}`]);
 	const [newCodeBlock, setNewCodeBlock] = useState<string>('');
 	const [readOnly, setReadOnly] = useState<boolean>(false);
@@ -50,7 +50,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 		});
 
 		socket.on('code_update', (data: string) => {
-			setMum(data);
+			setInformation(data);
 			document.getElementById('text-area')?.removeAttribute('readonly');
 			document.getElementById('text-area')?.setAttribute('innerHTML', data);
 			document.getElementById('text-area')?.setAttribute('value', data);
@@ -134,17 +134,12 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 						readOnly
 						id="text-area"
 						placeholder="enter your code...."
-						value={num}
+						value={information}
 						onChange={(e) => {
 							handelCodeBlockChange(e);
 						}}
 					/>
 				)}
-				<div id="code-container">
-					{messageList.map((message, index) => (
-						<div key={index}>{message}</div>
-					))}
-				</div>
 			</div>
 			{youRight && <div id="correct-code"> CORRECT CODE!!!</div>}
 			<button
