@@ -4,70 +4,62 @@ import './SingleCodeCard.css';
 import io from 'socket.io-client';
 import { RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
+import { DefaultEventsMap } from '@socket.io/component-emitter';
 import { ObjectId } from 'mongoose';
 const CONNECTION_PORT = 'http://localhost:7000';
 
 const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
+	console.log('start');
+
 	const data = useSelector((state: RootState) => state.codeBlocks.value);
 	const { title, code, _id } = props;
 	const [SubmitModal, setSubmitModal] = useState(false);
+	const [newSocket, setNewSocket] = useState<any>('0');
+	const [num, setMum] = useState<any>('0');
 	const [messageList, setMessageList] = useState<string[]>([`${code}`]);
-	const [newCodeBlock, setNewCodeBlock] = useState<any>(messageList);
-	const [readOnly, setReadOnly] = useState<boolean>(true);
+	const [newCodeBlock, setNewCodeBlock] = useState<string>('');
+	const [readOnly, setReadOnly] = useState<boolean>(false);
 	const [youRight, setYouRight] = useState<boolean>(false);
-	const codeData: ICodeBlock | undefined = data?.find((subject: ICodeBlock) => {
-		return subject._id?.toString() === _id;
-	});
+	const currentData: ICodeBlock | undefined = data?.find(
+		(subject: ICodeBlock) => {
+			return subject._id?.toString() === _id;
+		}
+	);
+	const [codeData, setCodeData] = useState(currentData);
 	const [correctCodes, setCorrectCode] = useState<string>(
 		`${codeData?.correctCode}`
 	);
-	console.log(correctCodes);
-	const newSocket = io(CONNECTION_PORT);
-	useEffect(() => {
-		newSocket.emit('join_Subject', codeData);
-		newSocket.on('receive_code', function (data) {
-			setNewCodeBlock(data);
-		});
-		newSocket.on('isMentor', (socketReadOnly) => {
-			setReadOnly(socketReadOnly);
-		});
-		return () => {
-			newSocket.off('receive_code');
-		};
-	}, []);
 
 	useEffect(() => {
-		newSocket.on('receive_code', (data) => {
-			console.log('data', data);
-			setNewCodeBlock(data);
+		const socket = io(CONNECTION_PORT);
+		setNewSocket(socket);
+
+		socket.on('isMentor', (socketReadOnly: any) => {
+			setReadOnly(socketReadOnly);
 		});
-		return () => {
-			setReadOnly(true);
-			const updateCode = {
-				...codeData,
-				code: newCodeBlock,
-			};
-			newSocket.emit('user_disconnect', updateCode);
-			newSocket.disconnect();
-		};
-	}, [CONNECTION_PORT]);
+
+		socket.on('code_update', (data: string) => {
+			setMum(data);
+			document.getElementById('text-area')?.removeAttribute('readonly');
+			document.getElementById('text-area')?.setAttribute('innerHTML', data);
+			document.getElementById('text-area')?.setAttribute('value', data);
+			document.getElementById('text-area')?.setAttribute('readonly', 'true');
+		});
+	}, []);
 
 	const handelCodeBlockChange = (
 		event: React.ChangeEvent<HTMLTextAreaElement>
 	) => {
+		event.persist();
+		newSocket.emit('new_code', event.target.innerHTML);
 		setNewCodeBlock(event.target.value);
-		const updateCode = {
-			...codeData,
-			readOnly: readOnly,
-			code: event.target.value,
-		};
-		if (correctCodes === event.target.value) {
+
+		if (correctCodes === event.target.innerHTML) {
 			console.log('Correct');
 			setYouRight(true);
 		} else {
 			setYouRight(false);
 		}
-		newSocket.emit('new_code', updateCode);
 	};
 
 	const handelSubmit = async () => {
@@ -77,8 +69,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 		};
 		console.log(updateCode, 'new');
 		if (updateCode._id) {
-			console.log(updateCode);
-			// await updateCodeData(updateCode._id, updateCode);
+			await updateCodeData(updateCode._id, updateCode);
 			setNewCodeBlock('');
 			setSubmitModal(false);
 		}
@@ -87,35 +78,35 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 		setSubmitModal(false);
 	};
 
-	// const updateCodeData = async (_id: ObjectId, newData: ICodeBlock) => {
-	// 	try {
-	// 		const response = await fetch(`http://localhost:7000/codeBlock`, {
-	// 			method: 'PUT',
-	// 			body: JSON.stringify({
-	// 				_id: _id,
-	// 				data: newData,
-	// 			}),
-	// 			headers: {
-	// 				'Content-type': 'application/json; charset=UTF-8',
-	// 			},
-	// 		});
-	// 		const data = await response.json();
-	// 		window.location.reload();
-	// 		if (!response.ok) {
-	// 			throw new Error(data.message);
-	// 		}
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 		throw err;
-	// 	}
-	// };
+	const updateCodeData = async (_id: ObjectId, newData: ICodeBlock) => {
+		try {
+			const response = await fetch(`http://localhost:7000/codeBlock`, {
+				method: 'PUT',
+				body: JSON.stringify({
+					_id: _id,
+					data: newData,
+				}),
+				headers: {
+					'Content-type': 'application/json; charset=UTF-8',
+				},
+			});
+			const data = await response.json();
+			window.location.reload();
+			if (!response.ok) {
+				throw new Error(data.message);
+			}
+		} catch (err) {
+			console.error(err);
+			throw err;
+		}
+	};
 	return (
 		<div className="subject-information">
 			<div id="card-information">
 				<div className="subject-title">{title}</div>
 			</div>
 			<div id="only-read-title">
-				{readOnly ? 'Only Read' : '	Edit Your Code'}
+				{readOnly ? 'Only Read' : 'Edit Your Code'}
 			</div>
 			<div id="text-area-container">
 				{!readOnly ? (
@@ -132,7 +123,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 						readOnly
 						id="text-area"
 						placeholder="enter your code...."
-						value={newCodeBlock}
+						value={num}
 						onChange={(e) => {
 							handelCodeBlockChange(e);
 						}}
