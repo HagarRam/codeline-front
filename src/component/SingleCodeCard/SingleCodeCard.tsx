@@ -61,12 +61,9 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const handelCodeBlockChange = (
 		event: React.ChangeEvent<HTMLTextAreaElement>
 	) => {
-		event.persist();
 		newSocket.emit('new_code', event.target.innerHTML);
 		setNewCodeBlock(event.target.value);
-
-		if (correctCodes === event.target.innerHTML) {
-			console.log('Correct');
+		if (currentData?.correctCode == event.target.value) {
 			setYouRight(true);
 		} else {
 			setYouRight(false);
@@ -80,6 +77,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 		};
 		console.log(updateCode, 'new');
 		if (updateCode._id) {
+			console.log(updateCode);
 			await updateCodeData(updateCode._id, updateCode);
 			setNewCodeBlock('');
 			setSubmitModal(false);
@@ -88,8 +86,9 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const handelCancel = () => {
 		setSubmitModal(false);
 	};
-
 	const updateCodeData = async (_id: ObjectId, newData: ICodeBlock) => {
+		console.log(_id);
+		console.log(newData);
 		try {
 			const response = await fetch(`http://localhost:7000/codeBlock`, {
 				method: 'PUT',
@@ -98,7 +97,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 					data: newData,
 				}),
 				headers: {
-					'Content-type': 'application/json; charset=UTF-8',
+					'Content-Type': 'application/json',
 				},
 			});
 			const data = await response.json();
@@ -111,6 +110,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 			throw err;
 		}
 	};
+
 	return (
 		<div className="subject-information">
 			<div id="card-information">
