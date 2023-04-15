@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ICodeBlock } from '../../store/slices/codeDatasSlice';
 import './SingleCodeCard.css';
 import io from 'socket.io-client';
 import { RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
 import { ObjectId } from 'mongoose';
+import 'highlight.js/styles/default.css';
+import hljs from 'highlight.js';
 const CONNECTION_PORT = 'http://localhost:7000';
 
 const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
@@ -16,6 +18,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const [newCodeBlock, setNewCodeBlock] = useState<string>(`${code}`);
 	const [readOnly, setReadOnly] = useState<boolean>(false);
 	const [youRight, setYouRight] = useState<boolean>(false);
+	const textareaRef = useRef<any>('');
 
 	const currentData: ICodeBlock | undefined = data?.find(
 		(subject: ICodeBlock) => {
@@ -26,6 +29,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const [correctCodes, setCorrectCode] = useState<string>(
 		`${codeData?.correctCode}`
 	);
+
 	useEffect(() => {
 		const socket = io(CONNECTION_PORT);
 		setNewSocket(socket);
@@ -50,6 +54,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 			document.getElementById('text-area')?.setAttribute('value', data);
 			document.getElementById('text-area')?.setAttribute('readonly', 'true');
 		});
+		hljs.highlightAll();
 	}, []);
 
 	const handelCodeBlockChange = (
@@ -111,17 +116,33 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 			</div>
 			<div id="text-area-container">
 				{!readOnly ? (
-					<textarea
-						id="text-area"
-						placeholder="enter your code...."
-						value={newCodeBlock}
-						onChange={(e) => {
-							handelCodeBlockChange(e);
-						}}
-					/>
+					<div>
+						<pre id="editor">
+							<code className="javascript">{newCodeBlock}</code>
+						</pre>
+						<textarea
+							id="text-area"
+							placeholder="enter your code...."
+							value={newCodeBlock}
+							onChange={(e) => {
+								handelCodeBlockChange(e);
+							}}
+						/>
+					</div>
 				) : (
+					// <pre id="editor">
+					// 	<code
+					// 		contentEditable="true"
+					// 		className="javascript"
+					// 		onChange={(e) => {
+					// 			handelCodeBlockChange(e);
+					// 		}}>
+					// 		{code}
+					// 	</code>
+					// </pre>
 					<textarea
 						readOnly
+						ref={textareaRef}
 						id="text-area"
 						placeholder="enter your code...."
 						value={information}
