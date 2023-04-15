@@ -10,16 +10,18 @@ export interface ICodeBlock {
 
 const data = async () => {
 	try {
-		const response = await fetch('http://localhost:7000/codeBlock', {
-			method: 'GET',
-		});
+		const response = await fetch(
+			'https://codelineback.onrender.com/codeBlock',
+			{
+				// const response = await fetch('http://localhost:7000/codeBlock', {
+				method: 'GET',
+			}
+		);
 		const data = await response.json();
 		return data;
 	} catch (err) {}
 };
 const codeData: ICodeBlock[] = await data();
-console.log(codeData);
-
 export const codeSlice = createSlice({
 	name: 'codeData',
 	initialState: {
