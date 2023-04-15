@@ -8,14 +8,11 @@ import { ObjectId } from 'mongoose';
 const CONNECTION_PORT = 'http://localhost:7000';
 
 const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
-	console.log('start');
-
 	const data = useSelector((state: RootState) => state.codeBlocks.value);
 	const { title, code, _id } = props;
 	const [SubmitModal, setSubmitModal] = useState(false);
 	const [newSocket, setNewSocket] = useState<any>('0');
 	const [information, setInformation] = useState<any>(`${code}`);
-	// const [messageList, setMessageList] = useState<string[]>([`${code}`]);
 	const [newCodeBlock, setNewCodeBlock] = useState<string>(`${code}`);
 	const [readOnly, setReadOnly] = useState<boolean>(false);
 	const [youRight, setYouRight] = useState<boolean>(false);
@@ -39,13 +36,10 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 				sessionStorage.setItem('isMentor', 'true');
 			}
 			const isMentor = sessionStorage.getItem('isMentor');
-			console.log('isMentor:', isMentor);
 			if (isMentor == 'true') {
 				setReadOnly(true);
-				return console.log('1');
 			} else {
 				setReadOnly(false);
-				return console.log('2');
 			}
 		});
 
@@ -75,9 +69,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 			...codeData,
 			code: newCodeBlock,
 		};
-		console.log(updateCode, 'new');
 		if (updateCode._id) {
-			console.log(updateCode);
 			await updateCodeData(updateCode._id, updateCode);
 			setNewCodeBlock('');
 			setSubmitModal(false);
@@ -87,8 +79,6 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 		setSubmitModal(false);
 	};
 	const updateCodeData = async (_id: ObjectId, newData: ICodeBlock) => {
-		console.log(_id);
-		console.log(newData);
 		try {
 			const response = await fetch(`http://localhost:7000/codeBlock`, {
 				method: 'PUT',
