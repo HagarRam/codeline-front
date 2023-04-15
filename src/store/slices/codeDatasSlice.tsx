@@ -11,7 +11,7 @@ export interface ICodeBlock {
 const data = async () => {
 	try {
 		const response = await fetch(
-			'https://codelineback.onrender.com/codeBlock',
+			'https://codelineback.onrender.com/codeblock',
 			{
 				// const response = await fetch('http://localhost:7000/codeBlock', {
 				method: 'GET',

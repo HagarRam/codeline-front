@@ -82,7 +82,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const updateCodeData = async (_id: ObjectId, newData: ICodeBlock) => {
 		try {
 			const response = await fetch(
-				`https://codelineback.onrender.com/codeBlock`,
+				`https://codelineback.onrender.com/codeblock`,
 				{
 					// const response = await fetch(`http://localhost:7000/codeBlock`, {
 					method: 'PUT',
