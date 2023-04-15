@@ -6,7 +6,6 @@ import { RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
 import { ObjectId } from 'mongoose';
 const CONNECTION_PORT = 'https://codelineback.onrender.com/';
-// const CONNECTION_PORT = 'http://localhost:7000';
 
 const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const data = useSelector((state: RootState) => state.codeBlocks.value);
@@ -84,7 +83,6 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 			const response = await fetch(
 				`https://codelineback.onrender.com/codeblock`,
 				{
-					// const response = await fetch(`http://localhost:7000/codeBlock`, {
 					method: 'PUT',
 					body: JSON.stringify({
 						_id: _id,
