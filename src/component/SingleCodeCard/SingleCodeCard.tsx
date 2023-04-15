@@ -14,9 +14,9 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 	const { title, code, _id } = props;
 	const [SubmitModal, setSubmitModal] = useState(false);
 	const [newSocket, setNewSocket] = useState<any>('0');
-	const [information, setInformation] = useState<any>('');
-	const [messageList, setMessageList] = useState<string[]>([`${code}`]);
-	const [newCodeBlock, setNewCodeBlock] = useState<string>('');
+	const [information, setInformation] = useState<any>(`${code}`);
+	// const [messageList, setMessageList] = useState<string[]>([`${code}`]);
+	const [newCodeBlock, setNewCodeBlock] = useState<string>(`${code}`);
 	const [readOnly, setReadOnly] = useState<boolean>(false);
 	const [youRight, setYouRight] = useState<boolean>(false);
 
@@ -117,7 +117,7 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 				<div className="subject-title">{title}</div>
 			</div>
 			<div id="only-read-title">
-				{readOnly ? 'Only Read' : 'Edit Your Code'}
+				{readOnly ? 'Teacher - Read Only' : 'Student - Edit Your Code'}
 			</div>
 			<div id="text-area-container">
 				{!readOnly ? (
