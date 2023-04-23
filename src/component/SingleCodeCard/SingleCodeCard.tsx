@@ -50,6 +50,9 @@ const SingleCodeCard: React.FC<ICodeBlock> = (props: ICodeBlock) => {
 			document.getElementById('text-area')?.setAttribute('value', data);
 			document.getElementById('text-area')?.setAttribute('readonly', 'true');
 		});
+		return () => {
+			socket.disconnect();
+		};
 	}, []);
 
 	const handelCodeBlockChange = (
